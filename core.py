@@ -3,6 +3,7 @@ import time
 import ntpath
 from watchdog.utils.dirsnapshot import DirectorySnapshot, DirectorySnapshotDiff
 import logging
+import PySimpleGUI as sg
 
 shadowplay_dir = "D:\Videos\Shadowplay"
 poll_rate = 5
@@ -18,6 +19,7 @@ def detectChanges(dirSnapshopRef):
             if file_extension == ".mp4":
                 # print("If you would like to rename it, please type a new name for it else leave it empty.")
                 logging.info(ntpath.basename(file) + " - asking to rename")
+                # rename_gui(file)
                 rename_file(file)
             else:
                 logging.info(ntpath.basename(file) + " was not a .mp4")
@@ -41,6 +43,14 @@ def rename_file(init_path):
         logging.warning("File was not renamed")
 
 
+def rename_gui(init_path):
+    new_fn, file_ext = ntpath.splitext(init_path)
+    form = sg.FlexForm("Rename File: "+new_fn)
+    layout = [[sg.Text('New File Name:'), sg.InputText()],
+              [sg.OK()]]
+
+    button, (name,) = form.Layout(layout).Read()
+
 def core():
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(message)s',
@@ -53,8 +63,8 @@ def core():
         while execute:
             time.sleep(poll_rate)
             dir_snapshot_curr = detectChanges(dir_snapshot_curr)
-    except Exception:
-        logging.error(Exception)
+    except Exception as exp:
+        logging.error(exp)
     logging.info("End of code reached")
 
 core()
