@@ -8,7 +8,8 @@ import PySimpleGUI as sg
 shadowplay_dir = "D:\Videos\Shadowplay"
 poll_rate = 5
 
-def detectChanges(dirSnapshopRef):
+
+def detect_changes(dirSnapshopRef):
     # hold = input()
     dir_snapshot_new = DirectorySnapshot(path=shadowplay_dir, recursive=True)
     list_of_new_files = DirectorySnapshotDiff(ref=dirSnapshopRef, snapshot=dir_snapshot_new).files_created
@@ -24,7 +25,7 @@ def detectChanges(dirSnapshopRef):
             else:
                 logging.info(ntpath.basename(file) + " was not a .mp4")
     else:
-        logging.info("No new files found - polling in "+str(poll_rate)+" secs")
+        logging.info("No new files found - polling in " + str(poll_rate) + " secs")
     return dir_snapshot_new
 
 
@@ -34,7 +35,7 @@ def rename_file(init_path):
     new_path = ntpath.dirname(init_path) + "\\" + user_new_fn
     new_fn, user_new_file_ext = ntpath.splitext(new_path)
 
-    if user_new_fn: #if user typed in a file name
+    if user_new_fn:  # if user typed in a file name
         if user_new_file_ext != ".mp4":
             new_path = new_path + ".mp4"
         os.rename(init_path, new_path)
@@ -45,11 +46,12 @@ def rename_file(init_path):
 
 def rename_gui(init_path):
     new_fn, file_ext = ntpath.splitext(init_path)
-    form = sg.FlexForm("Rename File: "+new_fn)
+    form = sg.FlexForm("Rename File: " + new_fn)
     layout = [[sg.Text('New File Name:'), sg.InputText()],
               [sg.OK()]]
 
     button, (name,) = form.Layout(layout).Read()
+
 
 def core():
     logging.basicConfig(level=logging.INFO,
@@ -62,10 +64,11 @@ def core():
     try:
         while execute:
             time.sleep(poll_rate)
-            dir_snapshot_curr = detectChanges(dir_snapshot_curr)
+            dir_snapshot_curr = detect_changes(dir_snapshot_curr)
     except Exception as exp:
         logging.error(exp)
     logging.info("End of code reached")
+
 
 core()
 

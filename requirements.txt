@@ -1,0 +1,3 @@
+PySimpleGUI==4.34.0
+pywin32==300
+watchdog==1.0.2
